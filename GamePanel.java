@@ -6,7 +6,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements ActionListener{
-
+    //instance variables
     static final int SCREEN_WIDTH = 600;
     static final int SCREEN_HEIGHT = 600;
     static final int UNIT_SIZE = 25;
@@ -22,6 +22,7 @@ public class GamePanel extends JPanel implements ActionListener{
     boolean running = false;
     Timer timer;
     Random random;
+    //Constructor
     GamePanel(){
         random = new Random();
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -30,16 +31,20 @@ public class GamePanel extends JPanel implements ActionListener{
         this.addKeyListener(new MyKeyAdapter());
         startGame();
     }
+
+    //Starts the game and runs the timer
     public void startGame() {
         newApple();
         running = true;
         timer = new Timer(DELAY, this);
         timer.start();
     }
+    //Calls the super method and draw
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
     }
+    //If the progrma is running, draws the grid lines, the apples, the snake, and the score.
     public void draw(Graphics g) {
         if(running) {
             for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
@@ -55,9 +60,14 @@ public class GamePanel extends JPanel implements ActionListener{
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 } else {
                     g.setColor(new Color(45, 180, 0));
+                    g.setColor(new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255)));
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 }
             }
+            g.setColor(Color.red);
+            g.setFont(new Font("Comic Sans MS", Font.PLAIN, 30));
+            FontMetrics metrics = getFontMetrics(g.getFont());
+            g.drawString("Apples Eaten: " + applesEaten, (SCREEN_WIDTH - metrics.stringWidth("Apples Eaten: " + applesEaten))/2, g.getFont().getSize());
         }
         else {
             gameOver(g);
@@ -125,9 +135,16 @@ public class GamePanel extends JPanel implements ActionListener{
     public void gameOver(Graphics g) {
         //Game Over Message
         g.setColor(Color.red);
-        g.setFont(new Font("Times New Roman", Font.BOLD, 75));
-        FontMetrics metrics = getFontMetrics(g.getFont());
-        //g.drawString("Game Over", );
+        g.setFont(new Font("Comic Sans MS", Font.BOLD, 75));
+        FontMetrics metrics1 = getFontMetrics(g.getFont());
+        g.drawString("Game Over", (SCREEN_WIDTH - metrics1.stringWidth("Game Over"))/2, SCREEN_HEIGHT/2);
+        g.setColor(Color.red);
+        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 30));
+        FontMetrics metrics2 = getFontMetrics(g.getFont());
+        g.drawString("Apples Eaten: " + applesEaten, (SCREEN_WIDTH - metrics2.stringWidth("Apples Eaten: " + applesEaten))/2, g.getFont().getSize());
+    }
+    public void playAgain(Graphics g) {
+
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -160,6 +177,11 @@ public class GamePanel extends JPanel implements ActionListener{
                 case KeyEvent.VK_DOWN:
                     if(direction != 'U') {
                         direction = 'D';
+                    }
+                    break;
+                case KeyEvent.VK_Y:
+                    if(!running) {
+                        running = true;
                     }
                     break;
             }
