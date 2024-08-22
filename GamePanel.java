@@ -12,8 +12,8 @@ public class GamePanel extends JPanel implements ActionListener{
     static final int UNIT_SIZE = 25;
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT)/UNIT_SIZE;
     static final int DELAY = 75;
-    final int x[] = new int[GAME_UNITS];
-    final int y[] = new int[GAME_UNITS];
+    int[] x = new int[GAME_UNITS];
+    int[] y = new int[GAME_UNITS];
     int bodyParts = 6;
     int applesEaten;
     int appleX;
@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements ActionListener{
     GamePanel(){
         random = new Random();
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        this.setBackground(Color.black);
+        this.setBackground(Color.green);
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
         startGame();
@@ -56,10 +56,9 @@ public class GamePanel extends JPanel implements ActionListener{
 
             for (int i = 0; i < bodyParts; i++) {
                 if (i == 0) {
-                    g.setColor(Color.GREEN);
+                    g.setColor(new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255)));
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 } else {
-                    g.setColor(new Color(45, 180, 0));
                     g.setColor(new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255)));
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 }
@@ -135,16 +134,24 @@ public class GamePanel extends JPanel implements ActionListener{
     public void gameOver(Graphics g) {
         //Game Over Message
         g.setColor(Color.red);
-        g.setFont(new Font("Comic Sans MS", Font.BOLD, 75));
+        g.setFont(new Font("Comic Sans MS", Font.BOLD, 65));
         FontMetrics metrics1 = getFontMetrics(g.getFont());
         g.drawString("Game Over", (SCREEN_WIDTH - metrics1.stringWidth("Game Over"))/2, SCREEN_HEIGHT/2);
         g.setColor(Color.red);
         g.setFont(new Font("Comic Sans MS", Font.PLAIN, 30));
         FontMetrics metrics2 = getFontMetrics(g.getFont());
         g.drawString("Apples Eaten: " + applesEaten, (SCREEN_WIDTH - metrics2.stringWidth("Apples Eaten: " + applesEaten))/2, g.getFont().getSize());
+        g.setColor(Color.white);
+        g.setFont(new Font("Comic Sans MS", Font.PLAIN, 30));
+        FontMetrics metrics3 = getFontMetrics(g.getFont());
+        g.drawString("Play Again? (Y)", (SCREEN_WIDTH - metrics3.stringWidth("Apples Eaten: " + applesEaten))/2, 3*SCREEN_HEIGHT/4);
     }
-    public void playAgain(Graphics g) {
-
+    public void resetData() {
+        direction = 'R';
+        applesEaten = 0;
+        bodyParts = 6;
+        x = new int[GAME_UNITS];
+        y = new int[GAME_UNITS];
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -181,7 +188,9 @@ public class GamePanel extends JPanel implements ActionListener{
                     break;
                 case KeyEvent.VK_Y:
                     if(!running) {
-                        running = true;
+                        repaint();
+                        resetData();
+                        startGame();
                     }
                     break;
             }
